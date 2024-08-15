@@ -3,7 +3,7 @@ import esphome.config_validation as cv
 from esphome.components import text_sensor
 from esphome.const import CONF_ID, CONF_LAMBDA, CONF_TEXT_SENSORS
 import esphome.codegen as cg
-custom_ns = cg.esphome_ns.namespace("custom")
+custom_ns = cg.esphome_ns.namespace("opencv")
 
 SevenSegmentOCRConstructor = custom_ns.class_("SevenSegmentOCRConstructor")
 
