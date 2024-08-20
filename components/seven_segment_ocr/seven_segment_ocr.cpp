@@ -1,3 +1,5 @@
+#ifdef USE_ESP32
+
 #include "seven_segment_ocr.h"
 #include "esphome/core/application.h"
 #include "esphome/core/hal.h"
@@ -12,17 +14,11 @@ namespace esphome
 {
     namespace seven_segment_ocr
     {
+        static const char *const TAG = "seven_segment_ocr";
 
-        static const char *TAG = "seven_segment_ocr.text_sensor";
-        static const int IMAGE_REQUEST_TIMEOUT = 5000;
+        SevenSegmentOCR::SevenSegmentOCR() {}
 
-        SevenSegmentOCR::SevenSegmentOCR()
-        {
-        }
-
-        SevenSegmentOCR::~SevenSegmentOCR()
-        {
-        }
+        SevenSegmentOCR::~SevenSegmentOCR() {}
 
         void SevenSegmentOCR::setup()
         {
@@ -32,26 +28,20 @@ namespace esphome
                 return;
             }
 
-            this->semaphore_ = xSemaphoreCreateBinary();
-
             esp32_camera::global_esp32_camera->add_image_callback([this](std::shared_ptr<esp32_camera::CameraImage> image)
                                                                   {
-    if (this->running_ && image->was_requested_by(esp32_camera::WEB_REQUESTER)) {
-      this->image_ = std::move(image);
-      xSemaphoreGive(this->semaphore_);
-    } });
+                                                                      ESP_LOGD(TAG, "Image received len=%d", image->get_data_length());
+                                                                      // this->image_ = std::move(image);
+                                                                  });
         }
 
         void SevenSegmentOCR::dump_config()
         {
-            ESP_LOGCONFIG(TAG, "Seven Segment OCR:");
+            ESP_LOGCONFIG(TAG, "Seven segment OCR:");
+
             if (this->is_failed())
             {
                 ESP_LOGE(TAG, "  Setup Failed");
-            }
-            else
-            {
-                ESP_LOGCONFIG(TAG, "  Running");
             }
         }
 
@@ -59,10 +49,8 @@ namespace esphome
 
         void SevenSegmentOCR::loop()
         {
-            if (!this->running_)
-            {
-                this->image_ = nullptr;
-            }
         }
     } // namespace seven_segment_ocr
 } // namespace esphome
+
+#endif // USE_ESP32

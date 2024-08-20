@@ -7,11 +7,11 @@ DEPENDENCIES = ["esp32_camera"]
 MULTI_CONF = True
 
 seven_segment_ocr_ns = cg.esphome_ns.namespace("seven_segment_ocr")
-SevenSegmentLCDOCR = seven_segment_ocr_ns.class_("SevenSegmentLCDOCR", cg.Component)
+SevenSegmentOCR = seven_segment_ocr_ns.class_("SevenSegmentOCR", cg.Component)
 
 CONFIG_SCHEMA = cv.Schema(
     {
-        cv.GenerateID(): cv.declare_id(SevenSegmentLCDOCR),
+        cv.GenerateID(): cv.declare_id(SevenSegmentOCR),
     },
 ).extend(cv.COMPONENT_SCHEMA)
 
