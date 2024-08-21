@@ -87,19 +87,22 @@ int main() {
   }
 
   struct m_image img = M_IMAGE_IDENTITY();
-  m_image_create(&img, M_FLOAT, width, height, 1);
-  memcpy(img.data, gray_img, img.size * sizeof(unsigned char));
+  m_image_create(&img, M_UBYTE, width, height, channels);
+  memcpy(img.data, data, img.size * sizeof(unsigned char));
   stbi_image_free(data);
   print_image_details(&img);
+  m_image_ubyte_to_float(&img, &img); // convert to float
 
   int new_height = 500;
   // calculate new width based on aspect ratio of original image
   int new_width = (int)((float)width / (float)height * new_height);
-  // m_image_resize(&img, &img, new_width, new_height); // resize image
+  m_image_resize(&img, &img, new_width, new_height); // resize image
   print_image_details(&img);
 
-  // m_image_grey(&img, &img); // convert to greyscale
-  // print_image_details(&img);
+  m_image_grey(&img, &img); // convert to greyscale
+  print_image_details(&img);
+  m_image_gaussian_blur(&img, &img, 3, 3); // apply Gaussian blur
+
   // m_image_sobel(&img, &img); // apply sobel filter
 
   if (stbi_write_jpg("test_out_gray.jpg", width, height, 1, gray_img, 100) ==
@@ -107,6 +110,7 @@ int main() {
     std::cerr << "Failed to write image" << std::endl;
     return 1;
   }
+  m_image_float_to_ubyte(&img, &img); // convert back to ubyte
   if (stbi_write_jpg("test_out.jpg", img.width, img.height, img.comp, img.data,
                      100) == 0) {
     std::cerr << "Failed to write image" << std::endl;
